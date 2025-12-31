@@ -1,10 +1,22 @@
+import { redirect } from "next/navigation";
+
 import { FeedWrapper } from "@/components/feed-wrapper";
 import { StickyWrapper } from "@/components/sticky-wraper";
 import { Header } from "./header";
 import { UserProgress } from "./user-progress";
-import { title } from "process";
+import { getUserProgress } from "@/db/queries";
 
-const LearnPage = () => {
+const LearnPage = async () => {
+
+    const userProgressData = getUserProgress();
+
+    const [
+        userProgress
+    ] = await Promise.all([userProgressData])
+
+    if(!userProgress || !userProgress.activeCourse){
+        redirect("/courses")
+    }
     return (
         <div className="flex flex-row-reverse gap-12 px-6">
             <StickyWrapper>
