@@ -23,8 +23,17 @@ export const List = ({ courses, activeCourseId }: Props) => {
         }
 
         startTransition(() => {
-            upsertUserProgress(id).catch(() => toast.error('Something went wrong'));
-        })
+            upsertUserProgress(id)
+                .then(() => {
+                    router.push("/learn");  // ← Redireciona só depois do sucesso
+                })
+                .catch(() => {
+                    toast.error("Erro ao selecionar o curso. Tente novamente.");
+                });
+        });
+
+
+
     }
     return (
         <div className="pt-6 grid grid-cols-2 lg:grid-cols-[repeat(auto-fill,minmax(210px,1fr))] gap-4">

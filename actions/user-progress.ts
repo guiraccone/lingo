@@ -15,7 +15,6 @@ export const upsertUserProgress = async (courseId: number) => {
     }
 
     const course = await getCourseById(courseId)
-
     if (!course) {
         throw new Error("Course not found!")
     }
@@ -26,25 +25,25 @@ export const upsertUserProgress = async (courseId: number) => {
     } */
 
     const existingUserProgress = await getUserProgress();
+
     if (existingUserProgress) {
         await db.update(userProgress).set({
             activeCourseId: courseId,
             userName: user.firstName || "User",
             userImageSrc: user.imageUrl || "/mascot.png"
         })
-        revalidatePath("/courses");
-        revalidatePath("/learn");
-        redirect("/learn");
     }
 
-    await db.insert(userProgress).values({
-        userId,
-        activeCourseId: courseId,
-        userName: user.firstName || "User",
-        userImageSrc: user.imageUrl || "/mascot.png"
-    })
+    else {
+        await db.insert(userProgress).values({
+            userId,
+            activeCourseId: courseId,
+            userName: user.firstName || "User",
+            userImageSrc: user.imageUrl || "/mascot.png"
+        })
+    }
 
     revalidatePath("/courses");
     revalidatePath("/learn");
-    redirect("/learn");
+
 }
